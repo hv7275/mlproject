@@ -1,12 +1,13 @@
 import os
 import sys
-from src.exception import CustomException
-from src.logger import logging
-
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
+from src.exception import CustomException
+from src.logger import logging
+from src.components.model_trainer import ModelTrainerConfig, ModelTrainer
 from src.components.data_transformation import DataTransformation, DataTransformationConfig
 
 @dataclass
@@ -62,8 +63,16 @@ if __name__ == '__main__':
             test_data
         )
         
-        logging.info("Transformation Successful! Arrays and preprocessor generated.")
-
+        # Step 3: Model Training
+        modeltrainer = ModelTrainer()
+        # Ensure all three required arguments are passed
+        r2_score_result = modeltrainer.initiate_model_trainer(
+            train_arr, 
+            test_arr, 
+            preprocessor_obj_file_path
+        )
+        print(f"Model Training Complete. R2 Score: {r2_score_result}")
+        
     except Exception as e:
         logging.error(f"Execution failed: {str(e)}")
         raise CustomException(e, sys)
