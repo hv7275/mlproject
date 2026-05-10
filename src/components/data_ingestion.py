@@ -7,6 +7,7 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+from src.components.data_transformation import DataTransformation, DataTransformationConfig
 
 @dataclass
 class DataIngestionConfig:
@@ -47,14 +48,22 @@ class DataIngestion:
 
 if __name__ == '__main__':
     try:
+        # Step 1: Data Ingestion
         obj = DataIngestion()
-        # Ensure you are capturing BOTH returned values here
-        train_data_path, test_data_path = obj.initiate_data_ingestion()
+        train_data, test_data = obj.initiate_data_ingestion()
+        logging.info(f"Ingestion completed. Raw files created in artifacts.")
+
+        # Step 2: Data Transformation
+        data_transformation = DataTransformation()
         
-        # Use the names you defined above
-        logging.info(f"Ingestion Successful! Train path: {train_data_path}")
+        # FIX: Ensure the variable names match those returned by ingestion
+        train_arr, test_arr, preprocessor_obj_file_path = data_transformation.initiate_data_transformation(
+            train_data, 
+            test_data
+        )
         
+        logging.info("Transformation Successful! Arrays and preprocessor generated.")
+
     except Exception as e:
-        # This will catch the 'name not defined' error and log it
         logging.error(f"Execution failed: {str(e)}")
         raise CustomException(e, sys)
