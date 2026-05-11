@@ -1,11 +1,16 @@
-from flask import Flask, request, render_template 
+import os
+from flask import Flask, request, render_template, redirect, url_for, session
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
 
 from sklearn.preprocessing import StandardScaler
 from src.pipeline.predict_pipeline import CustomData, PredictPipeline
 
-application = Flask(__name__) 
+load_dotenv()
+
+application = Flask(__name__)
+application.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 app = application
 
@@ -16,9 +21,7 @@ def index():
 
 @app.route('/predictdata', methods=['GET', 'POST'])
 def predict_datapoint():
-    if request.method == "GET":
-        return render_template('home.html')
-    else:
+    if request.method == 'POST':
         data = CustomData(
             gender=request.form.get('gender'),
             race_ethnicity=request.form.get('ethnicity'),
@@ -28,17 +31,21 @@ def predict_datapoint():
             reading_score=float(request.form.get('reading_score')),
             writing_score=float(request.form.get('writing_score'))
         )
-        
+
         pred_df = data.get_data_as_DataFrame()
         print(pred_df)
-        
+
         predict_pipeline = PredictPipeline()
         results = predict_pipeline.predict(pred_df)
-        
+
         # Round the result for better UI display
         final_result = round(results[0], 2)
-        
-        return render_template('home.html', results=final_result)
+        session['results'] = final_result
+
+        return redirect(url_for('predict_datapoint'))
+
+    results = session.pop('results', None)
+    return render_template('home.html', results=results)
     
 
 if __name__ == '__main__':

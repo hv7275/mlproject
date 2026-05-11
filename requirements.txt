@@ -6,4 +6,5 @@ catboost
 xgboost
 dill
 Flask
+dotenv
 -e .
