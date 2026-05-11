@@ -3,9 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Student Exam Performance</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            font-family: Arial, sans-serif;
+            background: #f7f4ef;
+            color: #0e0e14;
+        }
+        main {
+            width: min(92vw, 560px);
+            padding: 32px;
+            border: 1px solid #ddd9d2;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 4px 32px rgba(14, 14, 20, .08);
+            text-align: center;
+        }
+        h1 { margin: 0 0 12px; }
+        p { color: #6f6a64; margin-bottom: 28px; }
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        a {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .primary { background: #0e0e14; color: #fff; }
+        .secondary { border: 1px solid #ddd9d2; color: #0e0e14; }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Home Page.</h1>
+    <main>
+        <h1>Student Exam Performance</h1>
+        {% if session.get('user_id') %}
+            <p>You are logged in. Continue to the predictor or logout.</p>
+        {% else %}
+            <p>Log in or create an account to predict a student's maths score.</p>
+        {% endif %}
+        <div class="actions">
+            {% if session.get('user_id') %}
+                <a class="primary" href="{{ url_for('predict_datapoint') }}">Open Predictor</a>
+                <a class="secondary" href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a class="primary" href="{{ url_for('login') }}">Login</a>
+                <a class="secondary" href="{{ url_for('register') }}">Register</a>
+            {% endif %}
+        </div>
+    </main>
 </body>
 </html>

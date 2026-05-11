@@ -36,6 +36,39 @@
       max-width: 700px;
     }
 
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.6rem;
+      font-size: .9rem;
+      color: var(--muted);
+    }
+    .topbar strong { color: var(--ink); }
+    .topbar a {
+      color: var(--accent2);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .message {
+      padding: .8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: .9rem;
+    }
+    .message.success {
+      background: #eaf8ee;
+      color: #236b36;
+      border: 1px solid #cdebd5;
+    }
+    .message.error {
+      background: #fff0ed;
+      color: #9c321c;
+      border: 1px solid #ffd5cc;
+    }
+
     /* ── Header ── */
     .header {
       margin-bottom: 2.5rem;
@@ -229,6 +262,19 @@
 </head>
 <body>
 <div class="page">
+
+  <div class="topbar">
+    <div>Signed in as <strong>{{ session.get('username') }}</strong></div>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
   <div class="header">
     <h1>Student Exam<br/><span>Performance</span> Indicator</h1>
